@@ -1,10 +1,11 @@
 #!/bin/bash
 
-BACKUPLOCATION=`dirname $0`
-LOGINCONFFILE=${BACKUPLOCATION}/credentials.cfg
 # Specify cat here to disable gzip or gzip -c to enable
 GZIP=cat
 EXCLUDED="mysql information_schema performance_schema"
+
+BACKUPLOCATION=`dirname $0`
+LOGINCONFFILE=${BACKUPLOCATION}/credentials.cfg
 
 if [ "$GZIP" == "cat" ]; then
 	EXT=sql
