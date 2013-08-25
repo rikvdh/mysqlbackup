@@ -1,0 +1,23 @@
+#!/bin/bash
+
+BACKUPLOCATION=/home/mysql
+LOGINCONFFILE=/home/mysql/credentials.cfg
+# Specify cat here to disable gzip or gzip -c to enable
+GZIP=cat
+EXCLUDED="mysql information_schema performance_schema"
+
+if [ "$GZIP" == "cat" ]; then
+	EXT=sql
+else
+	EXT=sql.gz
+fi
+
+mysql --defaults-extra-file=${LOGINCONFFILE} -B -N -e "show databases" | while read db; do
+	echo ${EXCLUDED} | grep -q ${db}
+	if [ $? -eq 0 ]; then
+		continue;
+	fi
+	BACKUPFILE=$BACKUPLOCATION/${db}.${EXT}
+	echo "Backing up $db into $BACKUPFILE"
+	/usr/bin/mysqldump --defaults-extra-file=${LOGINCONFFILE} ${db} | ${GZIP} > $BACKUPFILE
+done
